@@ -1,0 +1,83 @@
+3 scripts needed:
+  - installation script (install.sh)
+  - uninstallation script (uninstall.sh)
+  - binary (gitflux.sh)
+
+---
+
+All the scripts need to be added to PATH so as to be accessed globally.
+The binary script needs to be symlinked.
+ - the application should be run by `gitflux` and not `./gitflux.sh`.
+
+---
+
+--> Your current git account is: {account}.
+--> Choose your desired option: 
+1. Switch account
+2. Add account (steps for SSH and PAT auth need to be added)
+3. Delete acccount
+4. List accounts
+
+---
+
+Option 1:
+--> Enter the username of the account you want to switch to: 
+
+Option 2:
+--> Enter the username for this account: 
+--> Enter the email address for this account: 
+--> Your account has been setup and is ready to use!
+--> [{username} : {email address}]
+
+Option 3:
+--> Enter the username for the account you want to delete: 
+--> Are you sure? (y/n): 
+--> [{username} : {email address}] has been deleted successfully!
+
+Option 4:
+--> Available accounts: {account-1} | {account-2} | {account-3} [accounts except the current ones to be listed]
+
+
+[.gitconfig] file location in Windows
+C:\\Users\{user}\.gitconfig
+
+---
+
+SSH Authentication Key generation and setup process:
+
+--> ssh-keygen -t ed25519 -C "git_email" -f ~/.ssh/git_username
+# Generates an ssh key pair with 
+- type (-t) eg. ed25519, rsa -b 4096. 
+- creates file (-f) and names the key {git_username} and automatically creates public key {git_username.pub}
+
+--> passphrases aren't important for SSH keys
+
+--> eval "$(ssh-agent -s)"
+# Starts your SSH Agent (if not running already)
+
+--> ssh-add ~/.ssh/git_username
+# Adds your private key to the SSH Agent
+
+--> cat ~/.ssh/git_username.pub
+# Outputs your public key.
+- Copy the outputted key and paste it in the designated section on the GitHub website. Assign a name to it for reference.
+
+--> ssh -T git@github.com
+# Verifies your SSH connection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
