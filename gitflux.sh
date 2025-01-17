@@ -26,14 +26,11 @@ print_title_with_subtitle() {
     # Soft purple subtitle
     printf "\033[38;5;146m         Manage Multiple Git Accounts with Ease\n"
     # Very subtle neon green accent for version
-    printf "\033[38;5;108m                     Version 1.0.0\n"
+    printf "\033[38;5;108m                     Version 2.0.1\n"
     printf "\033[0m\n"
 }
 
-# Call the function to test
 print_title_with_subtitle
-
-
 
 
 store_account() {
@@ -43,7 +40,7 @@ store_account() {
 	read -r git_email
 
 	echo "$git_name=$git_email" >> "$CONFIG_FILE"
-	echo "# "{$git_name}" successfully added to your list of accounts!"
+	echo -e "# \033[38;5;202m$git_name\033[0m successfully added to your list of accounts!"
 }
 
 git_name=$(git config --get user.name)
@@ -77,7 +74,7 @@ switch_account() {
 
 	count=1
 	while IFS='=' read -r username email; do
-		echo "$count] {$username}"
+		echo -e "$count] \033[1;32m$username\033[0m"
 		usernames[$count]=$username
 		((count++))
 	done < "$CONFIG_FILE"
@@ -94,8 +91,8 @@ switch_account() {
 				ssh-add -D
 				ssh-add ~/.ssh/"$target_account"
 				git config --global user.name "$target_account"
-				git config --global user.email "$value"
-				echo "# Successfully switched to account: $target_account"
+				git config --global user.email "$email"
+				echo -e "# Successfully switched to account: \033[1;31m$target_account\033[0m"
 				return
 			fi
 		done < "$CONFIG_FILE"
@@ -130,7 +127,7 @@ delete_account() {
     
     sed -i '' "${line_number}d" "$CONFIG_FILE"
 	echo
-    echo "# Account-"$line_number" deleted successfully!"
+    echo -e "# \033[38;5;129mAccount-$line_number\033[0m deleted successfully!"
 }
 
 list_accounts() {
