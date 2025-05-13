@@ -38,7 +38,7 @@ Follow the interactive prompts to:
 
 ## SSH Key Setup
 
-Your SSH keys should be named according to your Git username and stored in `~/.ssh/`. For example:
+Your SSH keys should be named according to your Git username and stored in `~/.ssh/` or else the `Switch Account` won't work. For example:
 - For username "work-user": `~/.ssh/work-user`
 - For username "personal-user": `~/.ssh/personal-user`
 

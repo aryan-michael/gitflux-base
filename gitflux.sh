@@ -26,18 +26,33 @@ print_title_with_subtitle() {
     # Soft purple subtitle
     printf "\033[38;5;146m         Manage Multiple Git Accounts with Ease\n"
     # Very subtle neon green accent for version
-    printf "\033[38;5;108m                     Version 2.0.1\n"
+    printf "\033[38;5;108m                     Version 2.0.2\n"
     printf "\033[0m\n"
 }
 
 print_title_with_subtitle
 
+setup_account() {
+	echo -n "# Enter the username for this account: "
+	read -r git_name
+	echo -n "# Enter the email address for this account: "
+	read -r git_email
+	echo
+
+	git config --global user.name "$git_name"
+	git config --global user.email "$git_email"
+
+	echo "$git_name=$git_email" >> "$CONFIG_FILE"
+	echo -e "# \033[38;5;202m$git_name\033[0m successfully added to your list of accounts!"
+	echo
+}
 
 store_account() {
 	echo -n "# Enter the username for this account: "
 	read -r git_name
 	echo -n "# Enter the email address for this account: "
 	read -r git_email
+	echo
 
 	echo "$git_name=$git_email" >> "$CONFIG_FILE"
 	echo -e "# \033[38;5;202m$git_name\033[0m successfully added to your list of accounts!"
@@ -45,26 +60,6 @@ store_account() {
 
 git_name=$(git config --get user.name)
 git_email=$(git config --get user.email)
-
-if [ ! -f "$CONFIG_FILE" ]; then
-	mkdir -p ~/.config/gitflux
-	touch "$CONFIG_FILE"
-	echo "# No config file found. Let's set it up!"
-
-	git_name=$(git config --get user.name)
-	git_email=$(git config --get user.email)
-	
-	echo
-	echo "# Addded the currently active git account {$git_name} to the gitflux config file."
-	echo
-
-	echo "$git_name=$git_email" >> "$CONFIG_FILE"
-
-else
-	printf "# Currently active git account on this system is \e[38;5;45m%s\e[0m\n" "${git_name}" 
-	echo
-
-fi
 
 switch_account() {
 	
@@ -101,7 +96,7 @@ switch_account() {
 	fi
 }
 
-add_accounts() {
+add_account() {
 	store_account
 	while true; do
 		echo
@@ -109,6 +104,7 @@ add_accounts() {
 		read -r add_bool
 		echo
 		if [ "$add_bool" != "y" ]; then
+			echo "Thank You & Goodbye!"
 			break
 		else
 			store_account
@@ -138,6 +134,39 @@ list_accounts() {
 	done < $CONFIG_FILE
 }
 
+if [ ! -f "$CONFIG_FILE" ]; then
+	mkdir -p ~/.config/gitflux
+	touch "$CONFIG_FILE"
+	echo "# No config file found. Let's set it up!"
+
+	git_name=$(git config --get user.name)
+	git_email=$(git config --get user.email)
+	
+	# echo
+	# echo "# Addded the currently active git account {$git_name} to the gitflux config file."
+	# echo
+
+	# Check if git_name and git_email are empty
+	if [ -z "$git_name" ] || [ -z "$git_email" ]; then
+		echo "# No git account found on this system."
+		echo
+		echo "# Let's add your first account."
+		echo
+		setup_account
+	else
+		echo
+		echo "# Added the currently active git account {$git_name} to the gitflux config file."
+		echo
+		
+		echo "$git_name=$git_email" >> "$CONFIG_FILE"
+	fi
+
+else
+	printf "# Currently active git account on this system is \e[38;5;45m%s\e[0m\n" "${git_name}" 
+	echo
+
+fi
+
 while true; do
     echo "# Select an option:"
 	echo
@@ -162,7 +191,7 @@ while true; do
         2)
             echo "* Adding a new account: "
 			echo
-            add_accounts
+            add_account
 			echo
 			exit 0
             ;;
